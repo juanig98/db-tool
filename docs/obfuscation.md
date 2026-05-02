@@ -108,6 +108,53 @@ Las listas de documentos anidados también son procesadas recursivamente.
 
 ---
 
+## Capa 3: Reemplazos directos
+
+Permite mapear un string literal a otro (ej: `coca-cola` → `koke-soda`). Aplica a **valores escalares string** dentro de los documentos y a **nombres de colecciones/tablas**.
+
+### Propósito
+
+Usado para ofuscar identificadores de tenants, nombres de clientes, o cualquier valor queidentifique negocio específico que se quiere reemplazar por un替代.
+
+### Formato del archivo
+
+El archivo `replacement_rules.txt` contiene una regla por línea:
+
+```
+original::reemplazo
+```
+
+- Líneas vacías y comentarios (`#`) son ignorados
+- El matching es por **substring** (aplica `str.replace` sobre el valor completo)
+
+Ejemplos:
+
+```
+# Reemplazos de nombres de empresas
+coca-cola::koke-soda
+acme-corp::widget-inc
+
+# Prefijos de collections
+old-prefix-::new-prefix-
+```
+
+### Prioridad sobre reglas PII
+
+Los reemplazos directos tienen **prioridad máxima**. Si un valor hace match con un reemplazo, las reglas PII (Capas 1 y 2) no se aplican sobre él. Esto permite que un valor como `coca-cola@email.com` se transforme directamente a `koke-soda@email.com` sin pasar por la regla de email de Faker.
+
+### Aplicación a nombres de colecciones
+
+El engine proporciona `transform_collection_name(name: str) -> str` que aplica los replacements al nombre de la colección:
+
+- **Copy**: la colección destino se crea con el nombre transformado. Si ya existe, se actualiza (upsert).
+- **Obfuscate in-place**: si el nombre cambia, se escribe a la nueva colección y luego se elimina la original. Error si la colección destino ya existe.
+
+### Configuración
+
+El archivo se define en `Settings.replacements_path` (default: `./replacement_rules.txt`). Es análogo a `obfuscation_rules_path`.
+
+---
+
 ## Modificar el sistema de ofuscación
 
 ### Agregar una regla fija permanente

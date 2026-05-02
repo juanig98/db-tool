@@ -25,6 +25,7 @@ docs/               documentación técnica detallada
 | `connections.yaml` | Perfiles de conexión | `connections.yaml.example` |
 | `settings.env` | Parámetros operativos | `settings.env.example` |
 | `obfuscation_rules.txt` | Reglas dinámicas de ofuscación | `obfuscation_rules.txt.example` |
+| `replacement_rules.txt` | Reemplazos directos de strings | `replacement_rules.txt.example` |
 
 ## Cómo modificar cada característica
 
@@ -56,6 +57,12 @@ docs/               documentación técnica detallada
 - Editar `obfuscation_rules.txt` (una regla por línea)
 - Formato: `field_regex::value_regex::faker_type`
 - Desde la TUI: Settings → editar ruta, luego editar el archivo
+
+### Agregar reemplazos directos
+→ Ver [`docs/obfuscation.md`](docs/obfuscation.md) — sección "Capa 3: Reemplazos directos"
+- Editar `replacement_rules.txt` (una regla por línea)
+- Formato: `original::reemplazo`
+- Aplica a valores string y nombres de colecciones
 
 ### Cambiar parámetros operativos
 - Editar `settings.env` directamente, o usar `db-tool tui` → Settings

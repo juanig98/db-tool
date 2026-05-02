@@ -67,6 +67,9 @@ def test_copy_with_obfuscation(source_connector, target_connector, settings):
         def transform(self, doc):
             return {**doc, "email": "fake@fake.com"}
 
+        def transform_collection_name(self, name):
+            return name
+
     result = run_copy(source_connector, target_connector, "users", settings, obfuscation_engine=MockEngine())
     assert target_connector._store["users"][0]["email"] == "fake@fake.com"
 

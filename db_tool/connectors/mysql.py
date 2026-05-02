@@ -111,8 +111,7 @@ class MySQLConnector(AbstractConnector):
         self._conn.commit()
         cursor.close()
 
-    def copy_indexes(self, source: AbstractConnector, collection: str) -> int:
-        # Cross-type index migration not supported; schema already created via upsert
+    def copy_indexes(self, source: AbstractConnector, collection: str, target_collection: str | None = None) -> int:
         return 0
 
     def collection_exists(self, collection: str) -> bool:

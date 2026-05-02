@@ -1,0 +1,7 @@
+# Reemplazos directos: original::reemplazo
+# Una regla por línea. Líneas vacías y comentarios (#) son ignorados.
+# Ejemplo: "coca-cola" en cualquier valor se reemplazará por "koke-soda"
+
+# coca-cola::koke-soda
+# acme-corp::widget-inc
+# old-prefix-::new-prefix-

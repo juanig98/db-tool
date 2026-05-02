@@ -105,3 +105,94 @@ def test_none_value_not_obfuscated(engine):
     doc = {"email": None}
     result = engine.transform(doc)
     assert result["email"] is None
+
+
+def test_replacement_substring_matching(tmp_path):
+    rules_path = tmp_path / "replacement_rules.txt"
+    rules_path.write_text("coca-cola::koke-soda\n")
+    settings = Settings(
+        state_dir=tmp_path / "state",
+        mappings_dir=tmp_path / "mappings",
+        obfuscation_rules_path=tmp_path / "rules.txt",
+        replacements_path=rules_path,
+    )
+    engine = ObfuscationEngine(settings, seed=42)
+    doc = {"company": "works with coca-cola inc"}
+    result = engine.transform(doc)
+    assert result["company"] == "works with koke-soda inc"
+
+
+def test_replacement_over_pii_priority(tmp_path):
+    rules_path = tmp_path / "replacement_rules.txt"
+    rules_path.write_text("test@example.com::replaced@test.com\n")
+    settings = Settings(
+        state_dir=tmp_path / "state",
+        mappings_dir=tmp_path / "mappings",
+        obfuscation_rules_path=tmp_path / "rules.txt",
+        replacements_path=rules_path,
+    )
+    engine = ObfuscationEngine(settings, seed=42)
+    doc = {"email": "test@example.com"}
+    result = engine.transform(doc)
+    assert result["email"] == "replaced@test.com"
+
+
+def test_replacement_no_match_leaves_pii_applied(tmp_path):
+    rules_path = tmp_path / "replacement_rules.txt"
+    rules_path.write_text("not-found::replaced\n")
+    settings = Settings(
+        state_dir=tmp_path / "state",
+        mappings_dir=tmp_path / "mappings",
+        obfuscation_rules_path=tmp_path / "rules.txt",
+        replacements_path=rules_path,
+    )
+    engine = ObfuscationEngine(settings, seed=42)
+    doc = {"email": "real@email.com"}
+    result = engine.transform(doc)
+    assert result["email"] != "real@email.com"
+    assert "@" in result["email"]
+
+
+def test_transform_collection_name(tmp_path):
+    rules_path = tmp_path / "replacement_rules.txt"
+    rules_path.write_text("coca-cola::koke-soda\nold-::new-\n")
+    settings = Settings(
+        state_dir=tmp_path / "state",
+        mappings_dir=tmp_path / "mappings",
+        obfuscation_rules_path=tmp_path / "rules.txt",
+        replacements_path=rules_path,
+    )
+    engine = ObfuscationEngine(settings, seed=42)
+    assert engine.transform_collection_name("coca-cola-orders") == "koke-soda-orders"
+    assert engine.transform_collection_name("old-users") == "new-users"
+    assert engine.transform_collection_name("unaffected-collection") == "unaffected-collection"
+
+
+def test_replacement_multiple_rules_order(tmp_path):
+    rules_path = tmp_path / "replacement_rules.txt"
+    rules_path.write_text("foo::baz\nbar::qux\n")
+    settings = Settings(
+        state_dir=tmp_path / "state",
+        mappings_dir=tmp_path / "mappings",
+        obfuscation_rules_path=tmp_path / "rules.txt",
+        replacements_path=rules_path,
+    )
+    engine = ObfuscationEngine(settings, seed=42)
+    doc = {"text": "foo and bar"}
+    result = engine.transform(doc)
+    assert result["text"] == "baz and qux"
+
+
+def test_replacement_empty_string_not_touched(tmp_path):
+    rules_path = tmp_path / "replacement_rules.txt"
+    rules_path.write_text("test::replaced\n")
+    settings = Settings(
+        state_dir=tmp_path / "state",
+        mappings_dir=tmp_path / "mappings",
+        obfuscation_rules_path=tmp_path / "rules.txt",
+        replacements_path=rules_path,
+    )
+    engine = ObfuscationEngine(settings, seed=42)
+    doc = {"text": ""}
+    result = engine.transform(doc)
+    assert result["text"] == ""

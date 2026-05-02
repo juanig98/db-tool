@@ -87,8 +87,7 @@ class BigQueryConnector(AbstractConnector):
         table_ref = self._client.dataset(self._dataset).table(collection)
         self._client.delete_table(table_ref, not_found_ok=True)
 
-    def copy_indexes(self, source: AbstractConnector, collection: str) -> int:
-        # BigQuery has no traditional indexes; partitioning/clustering is schema-level
+    def copy_indexes(self, source: AbstractConnector, collection: str, target_collection: str | None = None) -> int:
         return 0
 
     def collection_exists(self, collection: str) -> bool:

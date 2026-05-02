@@ -197,6 +197,7 @@
   "tui.settings.label.state_dir": "STATE_DIR:",
   "tui.settings.label.mappings_dir": "MAPPINGS_DIR:",
   "tui.settings.label.obfuscation_rules_path": "OBFUSCATION_RULES_PATH:",
+  "tui.settings.label.replacements_path": "REPLACEMENTS_PATH:",
   "tui.settings.label.mongo_max_retries": "MONGO_MAX_RETRIES:",
   "tui.settings.label.mongo_retry_backoff_base": "MONGO_RETRY_BACKOFF_BASE:",
   "tui.settings.label.language": "LANGUAGE (en|es):",

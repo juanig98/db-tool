@@ -42,7 +42,7 @@ class AbstractConnector(ABC):
 
     @abstractmethod
     def copy_indexes(
-        self, source: "AbstractConnector", collection: str
+        self, source: "AbstractConnector", collection: str, target_collection: str | None = None
     ) -> int:
         """Copy indexes from source connector for the given collection. Returns count."""
         ...
