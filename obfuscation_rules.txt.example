@@ -1,0 +1,17 @@
+# Dynamic obfuscation rules
+# Format: field_regex::value_regex::faker_type
+# field_regex: matches field name (applied recursively to nested docs)
+# value_regex: matches the field value (use .* to match any value)
+# faker_type: Faker provider method name (email, name, phone_number, numerify, etc.)
+#
+# Examples:
+.*email.*::.*@.*::email
+.*phone.*::\d{7,15}::phone_number
+.*mobile.*::\d{7,15}::phone_number
+.*dni.*::\d{7,9}::numerify
+.*nid.*::\d{7,9}::numerify
+.*tax_id.*::.*::numerify
+.*fiscal.*::.*::numerify
+.*address.*::.*::address
+.*street.*::.*::street_address
+.*zip.*::\d{4,5}::postcode

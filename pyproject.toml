@@ -1,0 +1,41 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "db-tool"
+version = "0.1.0"
+description = "Database utility toolkit for copying, syncing, and obfuscating data across environments"
+requires-python = ">=3.12"
+dependencies = [
+    "typer>=0.12",
+    "textual>=0.60",
+    "pymongo>=4.7",
+    "google-cloud-bigquery>=3.20",
+    "mysql-connector-python>=9.0",
+    "faker>=25.0",
+    "pydantic>=2.7",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0",
+    "rich>=13.7",
+]
+
+[project.scripts]
+db-tool = "db_tool.main:app"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2",
+    "pytest-mock>=3.14",
+    "pytest-asyncio>=0.23",
+]
+
+[tool.pytest.ini_options]
+addopts = "-m 'not integration'"
+markers = [
+    "integration: requires real database connections",
+]
+testpaths = ["tests"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["db_tool"]

@@ -1,0 +1,40 @@
+# Entorno Docker para testing de db-tool
+#
+# Uso:
+#   docker compose up -d
+#   python generate_test_data.py
+#
+# Para detener y limpiar:
+#   docker compose down
+#   docker compose down -v   # también elimina el volumen de mongo-source
+
+services:
+  mongo-source:
+    image: mongo:7.0
+    container_name: mongo-source
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_source_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  mongo-target:
+    image: mongo:7.0
+    container_name: mongo-target
+    ports:
+      - "27018:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  mongo_source_data:
+    name: db_tool_mongo_source

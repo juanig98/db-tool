@@ -1,0 +1,15 @@
+connections.yaml
+settings.env
+obfuscation_rules.txt
+.env
+.env.*
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.ruff_cache/
+dist/
+*.egg-info/
+.venv/
+venv/
+legacy/

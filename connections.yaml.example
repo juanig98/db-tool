@@ -1,0 +1,30 @@
+- alias: prod-db1
+  environment: production
+  type: mongodb
+  connection_string: "mongodb://user:password@prod-host:10255/?ssl=true"
+  database_name: mydb
+  blacklist:
+    - "^tmp_.*"
+    - "^audit_.*"
+
+- alias: dev-db1
+  environment: dev
+  type: mongodb
+  connection_string: "mongodb://localhost:27017"
+  database_name: mydb
+  blacklist: []
+
+- alias: local-mysql
+  environment: local
+  type: mysql
+  connection_string: "mysql://root:password@localhost:3306"
+  database_name: mydb
+  blacklist: []
+
+- alias: prod-db2
+  environment: production
+  type: bigquery
+  connection_string: "bigquery://my-project"
+  database_name: my-dataset
+  blacklist:
+    - "^raw_.*"
