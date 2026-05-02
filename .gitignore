@@ -1,6 +1,7 @@
 connections.yaml
 settings.env
 obfuscation_rules.txt
+replacement_rules.txt
 .env
 .env.*
 __pycache__/

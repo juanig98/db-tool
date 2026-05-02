@@ -65,11 +65,12 @@ class FakeConnector(AbstractConnector):
         self.assert_write_allowed()
         self._store.pop(collection, None)
 
-    def copy_indexes(self, source: AbstractConnector, collection: str) -> int:
+    def copy_indexes(self, source: AbstractConnector, collection: str, target_collection: str | None = None) -> int:
         if not isinstance(source, FakeConnector):
             return 0
+        target = target_collection or collection
         src_indexes = source._indexes.get(collection, [])
-        self._indexes[collection] = list(src_indexes)
+        self._indexes[target] = list(src_indexes)
         return len(src_indexes)
 
     def collection_exists(self, collection: str) -> bool:

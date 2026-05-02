@@ -45,10 +45,15 @@ def run_copy(
     collections_total = len(collections)
     _log.info(f"Copy operation: {collections_total} collections to copy")
     for col_idx, collection in enumerate(collections):
+        target_collection = (
+            obfuscation_engine.transform_collection_name(collection)
+            if obfuscation_engine else collection
+        )
         col_result = _copy_collection(
             source=source,
             target=target,
             collection=collection,
+            target_collection=target_collection,
             settings=settings,
             obfuscation_engine=obfuscation_engine,
             data_only=data_only,
@@ -72,6 +77,7 @@ def _copy_collection(
     source: AbstractConnector,
     target: AbstractConnector,
     collection: str,
+    target_collection: str,
     settings: Settings,
     obfuscation_engine: Any | None,
     data_only: bool,
@@ -123,7 +129,7 @@ def _copy_collection(
                 _log.info(f"[{collection}] [batch {batch_index}] {len(batch)} processed, {obfuscated_count} obfuscated")
 
             if not dry_run:
-                upserted, modified = target.upsert_batch(collection, batch)
+                upserted, modified = target.upsert_batch(target_collection, batch)
                 col_result.upserted += upserted
                 col_result.modified += modified
                 state_manager.mark_batch_done(src_alias, tgt_alias, collection, batch_index)
@@ -136,7 +142,7 @@ def _copy_collection(
         if not dry_run and not data_only:
             _emit(progress_callback, collection, batch_index, docs_processed, total_docs,
                   col_result.upserted, col_result.modified, col_result.skipped, obfuscated_total, "indexing", None, collection_index, collections_total)
-            target.copy_indexes(source, collection)
+            target.copy_indexes(source, collection, target_collection)
 
         if not dry_run:
             state_manager.mark_collection_complete(src_alias, tgt_alias, collection)

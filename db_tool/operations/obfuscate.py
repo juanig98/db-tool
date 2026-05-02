@@ -39,9 +39,17 @@ def run_obfuscate(
     collections_total = len(collections)
     _log.info(f"Obfuscate operation: {collections_total} collections to process")
     for col_idx, collection in enumerate(collections):
+        target_collection = obfuscation_engine.transform_collection_name(collection)
+
+        if target_collection != collection and target.collection_exists(target_collection):
+            _log.error(f"Cannot rename '{collection}' to '{target_collection}': target collection already exists")
+            result.collections.append(CollectionResult(collection=collection, error=f"Target collection '{target_collection}' already exists"))
+            continue
+
         col_result = _obfuscate_collection(
             target=target,
             collection=collection,
+            target_collection=target_collection,
             obfuscation_engine=obfuscation_engine,
             settings=settings,
             dry_run=dry_run,
@@ -59,6 +67,7 @@ def run_obfuscate(
 def _obfuscate_collection(
     target: AbstractConnector,
     collection: str,
+    target_collection: str,
     obfuscation_engine: Any,
     settings: Settings,
     dry_run: bool,
@@ -81,7 +90,7 @@ def _obfuscate_collection(
             _log.info(f"[{collection}] [batch {batch_index}] {len(batch)} processed, {obfuscated_count} obfuscated")
 
             if not dry_run:
-                upserted, modified = target.upsert_batch(collection, obfuscated)
+                upserted, modified = target.upsert_batch(target_collection, obfuscated)
                 col_result.upserted += upserted
                 col_result.modified += modified
             docs_processed += len(batch)
@@ -116,6 +125,10 @@ def _obfuscate_collection(
                 collection_index=collection_index,
                 collections_total=collections_total,
             ))
+
+        if target_collection != collection and not dry_run:
+            target.delete_collection(collection)
+            _log.info(f"Deleted original collection '{collection}' after rename to '{target_collection}'")
 
     except Exception as exc:
         col_result.error = str(exc)

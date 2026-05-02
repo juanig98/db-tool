@@ -54,6 +54,7 @@ class Settings(BaseModel):
     state_dir: Path = Path("~/.db-tool/state").expanduser()
     mappings_dir: Path = Path("~/.db-tool/mappings").expanduser()
     obfuscation_rules_path: Path = Path("./obfuscation_rules.txt")
+    replacements_path: Path = Path("./replacement_rules.txt")
     mongo_max_retries: int = 5
     mongo_retry_backoff_base: float = 2.0
 

@@ -99,13 +99,13 @@ class MongoDBConnector(AbstractConnector):
         self.assert_write_allowed()
         self._db[collection].drop()
 
-    def copy_indexes(self, source: AbstractConnector, collection: str) -> int:
+    def copy_indexes(self, source: AbstractConnector, collection: str, target_collection: str | None = None) -> int:
         self._ensure_connected()
         self.assert_write_allowed()
         if not isinstance(source, MongoDBConnector):
-            # Cross-type: no index migration supported
             return 0
         source._ensure_connected()
+        target = target_collection or collection
         count = 0
         for index_info in source._db[collection].index_information().values():
             if index_info.get("name") == "_id_":
@@ -116,7 +116,7 @@ class MongoDBConnector(AbstractConnector):
                 if k not in ("key", "ns", "v", "name")
             }
             try:
-                self._db[collection].create_index(keys, **options)
+                self._db[target].create_index(keys, **options)
                 count += 1
             except Exception:
                 pass

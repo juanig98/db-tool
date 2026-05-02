@@ -167,12 +167,12 @@ VAR_KEYS = [
 
 
 # ---------------------------------------------------------------------------
-# enigma_business
+# db_business
 # ---------------------------------------------------------------------------
 
 
 def generate_business(db) -> dict:
-    """Populate enigma_business. Returns references for analytics."""
+    """Populate db_business. Returns references for analytics."""
 
     # -- clients ----------------------------------------------------------
     client_configs = [
@@ -472,7 +472,7 @@ def generate_business(db) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# enigma_analytics
+# db_analytics
 # ---------------------------------------------------------------------------
 
 
@@ -650,8 +650,8 @@ def print_summary(source_client: MongoClient, business_db: str, analytics_db: st
 def main() -> None:
     parser = argparse.ArgumentParser(description="Genera datos de prueba en MongoDB para db-tool.")
     parser.add_argument("--uri", default=MONGO_SOURCE_URI, help="URI de MongoDB destino (default: %(default)s)")
-    parser.add_argument("--business-db", default="enigma_business", metavar="NAME", help="Nombre de la base de datos de negocio (default: %(default)s)")
-    parser.add_argument("--analytics-db", default="enigma_analytics", metavar="NAME", help="Nombre de la base de datos de analítica (default: %(default)s)")
+    parser.add_argument("--business-db", default="db_business", metavar="NAME", help="Nombre de la base de datos de negocio (default: %(default)s)")
+    parser.add_argument("--analytics-db", default="db_analytics", metavar="NAME", help="Nombre de la base de datos de analítica (default: %(default)s)")
     args = parser.parse_args()
 
     print(f"Conectando a {args.uri}…")

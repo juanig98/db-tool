@@ -9,6 +9,7 @@ from db_tool.config.models import Settings
 from db_tool.obfuscation.dynamic_rules import load_dynamic_rules
 from db_tool.obfuscation.fixed_rules import FIXED_RULES, FieldRule
 from db_tool.obfuscation.mappings import MappingStore
+from db_tool.obfuscation.replacement_rules import ReplacementRule, load_replacement_rules
 
 
 class ObfuscationEngine:
@@ -27,6 +28,9 @@ class ObfuscationEngine:
         self._dynamic_rules: list[FieldRule] = []
         if settings.obfuscation_rules_path.exists():
             self._dynamic_rules = load_dynamic_rules(settings.obfuscation_rules_path)
+        self._replacement_rules: list[ReplacementRule] = []
+        if settings.replacements_path.exists():
+            self._replacement_rules = load_replacement_rules(settings.replacements_path)
 
     def reload_dynamic_rules(self, rules_path: Path) -> None:
         self._dynamic_rules = load_dynamic_rules(rules_path)
@@ -40,6 +44,11 @@ class ObfuscationEngine:
             return {k: self._transform_value(k, v) for k, v in value.items()}
         if isinstance(value, list):
             return [self._transform_value(field_name, item) for item in value]
+        # scalar: apply direct replacements first (priority over PII rules)
+        if isinstance(value, str) and value and self._replacement_rules:
+            replaced = self._apply_replacements(value)
+            if replaced != value:
+                return replaced
         # scalar: check if a rule matches
         rule = self._find_rule(field_name, value)
         if rule is not None and value is not None and value != "":
@@ -73,3 +82,12 @@ class ObfuscationEngine:
         if fn is None:
             return lambda: self._faker.bothify(text="????-####")
         return fn
+
+    def _apply_replacements(self, value: str) -> str:
+        result = value
+        for rule in self._replacement_rules:
+            result = result.replace(rule.source, rule.target)
+        return result
+
+    def transform_collection_name(self, name: str) -> str:
+        return self._apply_replacements(name)
