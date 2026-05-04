@@ -135,6 +135,9 @@ class ProgressScreen(Screen[None]):
         if config.obfuscate:
             from db_tool.obfuscation.engine import ObfuscationEngine
             engine = ObfuscationEngine(self._settings)
+        elif getattr(config, "replace", False):
+            from db_tool.obfuscation.engine import ObfuscationEngine
+            engine = ObfuscationEngine(self._settings, replace_only=True)
 
         def callback(event: object) -> None:
             self.post_message(OperationProgress(event))

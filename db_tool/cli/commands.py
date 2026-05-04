@@ -69,6 +69,11 @@ def _build_engine(settings):
     return ObfuscationEngine(settings)
 
 
+def _build_replace_engine(settings):
+    from db_tool.obfuscation.engine import ObfuscationEngine
+    return ObfuscationEngine(settings, replace_only=True)
+
+
 # ── copy ──────────────────────────────────────────────────────────────────────
 
 @app.command(help=t("cli.copy.help"))
@@ -77,6 +82,7 @@ def copy(
     target: str = typer.Option(..., "--target", "-t", help=t("cli.copy.option.target")),
     pattern: str = typer.Option(".*", "--pattern", "-p", help=t("cli.copy.option.pattern")),
     obfuscate: bool = typer.Option(False, "--obfuscate", help=t("cli.copy.option.obfuscate")),
+    replace: bool = typer.Option(False, "--replace", help=t("cli.copy.option.replace")),
     data_only: bool = typer.Option(False, "--data-only", help=t("cli.copy.option.data_only")),
     dry_run: bool = typer.Option(False, "--dry-run", help=t("cli.copy.option.dry_run")),
     resume: bool = typer.Option(False, "--resume", help=t("cli.copy.option.resume")),
@@ -100,11 +106,16 @@ def copy(
         if not confirm_stage_operation(target, "copy"):
             raise typer.Abort()
 
-    if src_profile.is_production and not obfuscate:
+    if src_profile.is_production and not obfuscate and not replace:
         if not confirm_copy_without_obfuscation(source):
             raise typer.Abort()
 
-    engine = _build_engine(settings) if obfuscate else None
+    if obfuscate:
+        engine = _build_engine(settings)
+    elif replace:
+        engine = _build_replace_engine(settings)
+    else:
+        engine = None
 
     with get_connector(src_profile, settings) as src, get_connector(tgt_profile, settings) as tgt:
         result = run_copy(
