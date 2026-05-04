@@ -1,4 +1,4 @@
-# SDD 008 — Bloqueo heurístico de escrituras en entornos productivos
+# SDD 009 — Bloqueo heurístico de escrituras en entornos productivos
 
 ## Contexto
 
@@ -85,18 +85,17 @@ if self._needs_target and target_val:
 "tui.connection_select.error.prod_heuristic_block": "No se puede usar '{alias}' como target: la cadena de conexión contiene '{keyword}', lo que sugiere un entorno productivo. Si es intencional, configurar allow_prod_writes: true en connections.yaml."
 ```
 
-### `connections.yaml.example`
-Agregar `allow_prod_writes: true` en el perfil de producción de ejemplo con un comentario explicativo:
+### `config/connections.yaml.example`
+Agregar `allow_prod_writes` comentado en un perfil no-productivo de ejemplo. El flag no tiene sentido en perfiles `production` (ya bloqueados por `guard_write`); su caso de uso es un perfil dev/stage cuya connection string contiene una keyword de producción por razones legítimas (ej. un clone nombrado `prod-clone-local`).
 
 ```yaml
-- alias: prod-mongo
-  environment: production
+- alias: dev-db1
+  environment: dev
   type: mongodb
-  connection_string: "mongodb://user:password@prod-host:10255/?ssl=true"
-  database_name: myapp
-  blacklist:
-    - "^audit_.*"
-  # allow_prod_writes: true  # uncomment only if you understand the risks
+  connection_string: "mongodb://localhost:27017"
+  database_name: mydb
+  blacklist: []
+  # allow_prod_writes: true  # set to true only if this non-production connection has a prod-like hostname that triggers the heuristic block
 ```
 
 ---
