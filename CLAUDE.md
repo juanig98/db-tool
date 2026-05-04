@@ -1,5 +1,34 @@
 # db-tool — Guía para Claude
 
+## Flujo de trabajo con el usuario
+
+Todo cambio al proyecto sigue este flujo. No saltear pasos ni implementar antes de tener validación explícita.
+
+1. **Entender el requerimiento** — el usuario describe el problema o la feature. Hacer preguntas si algo es ambiguo antes de avanzar.
+2. **Revisar el código relevante** — leer los archivos afectados para tener contexto real antes de opinar.
+3. **Proponer y discutir** — presentar el enfoque en 2-3 oraciones con la recomendación y el tradeoff principal. Iterar hasta que el usuario valide.
+4. **Crear el plan** — escribir un SDD detallado en `docs/sdd/XXX-{nombre-relevante}.md` (número correlativo). El plan debe incluir: contexto, decisiones de diseño, archivos a modificar con los cambios concretos, y sección de verificación.
+5. **Esperar validación del plan** — no implementar hasta que el usuario confirme explícitamente.
+6. **Implementar** — crear la rama a partir de `main` (salvo que el plan indique otra base), aplicar los cambios, correr `pytest tests/unit/` y verificar que todo pasa.
+7. **Commit** — un solo commit por feature/fix con mensaje descriptivo que explique el *por qué*, no el *qué*. Siempre incluir `Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>`.
+8. **El usuario valida y prueba** — esperar feedback antes de dar la tarea por cerrada.
+
+### Convenciones de ramas
+
+| Tipo | Prefijo | Ejemplo |
+|------|---------|---------|
+| Feature nueva | `feature/` | `feature/replace-flag-copy-operation` |
+| Bug fix | `fix/` | `fix/remove-obfuscate-from-delete-screen` |
+| Refactor / reorganización | `refactor/` | `refactor/config-files-relocation` |
+
+### Convenciones de SDDs
+
+- Numeración correlativa: ver el último archivo en `docs/sdd/` para saber el próximo número.
+- Nombre en kebab-case describiendo la feature, no la implementación: `008-config-files-relocation`, no `008-mover-archivos`.
+- Estructura mínima: **Contexto** → **Decisiones de diseño** → **Archivos a modificar** (con código concreto) → **Verificación**.
+
+---
+
 ## Stack
 Python 3.12 · Typer (CLI) · Textual (TUI) · Faker (ofuscación) · Pydantic v2 · pymongo · google-cloud-bigquery · mysql-connector-python · pytest
 
