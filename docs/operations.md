@@ -15,13 +15,16 @@ db-tool copy --source <alias> --target <alias> [opciones]
 | Flag | Default | Descripción |
 |------|---------|-------------|
 | `--pattern` | `.*` | Regex para filtrar colecciones |
-| `--obfuscate` | false | Aplica ofuscación en memoria antes de escribir |
+| `--obfuscate` | false | Aplica ofuscación PII completa (reglas fijas + dinámicas + reemplazos directos) |
+| `--replace` | false | Aplica solo reemplazos directos (`replacement_rules.txt`) sin ofuscación PII |
 | `--data-only` | false | Omite la copia de índices |
 | `--dry-run` | false | Muestra qué haría sin ejecutar |
 | `--resume` | false | Retoma desde el último checkpoint |
 | `--max-docs` | 0 (todos) | Límite de documentos por colección |
 
-**Comportamiento con producción como origen**: si `--obfuscate` no está activo, solicita confirmación explícita antes de copiar datos sensibles.
+> `--obfuscate` incluye los reemplazos directos. Usar `--replace --obfuscate` es equivalente a usar solo `--obfuscate`.
+
+**Comportamiento con producción como origen**: si ni `--obfuscate` ni `--replace` están activos, solicita confirmación explícita antes de copiar datos sensibles.
 
 **Checkpointing**: el progreso se guarda en `~/.db-tool/state/` por batch. Si la operación se interrumpe, `--resume` la retoma desde donde quedó sin re-procesar batches ya completados.
 

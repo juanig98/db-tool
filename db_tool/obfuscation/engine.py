@@ -20,13 +20,15 @@ class ObfuscationEngine:
         settings: Settings,
         locale: str = "es_ES",
         seed: int | None = None,
+        replace_only: bool = False,
     ) -> None:
         self._faker = Faker(locale)
         if seed is not None:
             Faker.seed(seed)
         self._mapping_store = MappingStore(settings)
+        self._fixed_rules: list[FieldRule] = [] if replace_only else list(FIXED_RULES)
         self._dynamic_rules: list[FieldRule] = []
-        if settings.obfuscation_rules_path.exists():
+        if not replace_only and settings.obfuscation_rules_path.exists():
             self._dynamic_rules = load_dynamic_rules(settings.obfuscation_rules_path)
         self._replacement_rules: list[ReplacementRule] = []
         if settings.replacements_path.exists():
@@ -57,7 +59,7 @@ class ObfuscationEngine:
 
     def _find_rule(self, field_name: str, value: Any) -> FieldRule | None:
         # Fixed rules checked first, then dynamic
-        for rule in FIXED_RULES + self._dynamic_rules:
+        for rule in self._fixed_rules + self._dynamic_rules:
             if not rule.field_pattern.fullmatch(field_name):
                 continue
             if rule.value_pattern is not None:

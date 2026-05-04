@@ -21,6 +21,7 @@ class OperationConfig:
     target_alias: str | None
     pattern: str
     obfuscate: bool
+    replace: bool
     data_only: bool
     dry_run: bool
     resume: bool
@@ -81,6 +82,7 @@ class OperationConfigScreen(Screen[OperationConfig | None]):
             with Horizontal():
                 yield Checkbox(t("tui.operation_config.checkbox.obfuscate"), id="obfuscate")
                 if self._operation == "copy":
+                    yield Checkbox(t("tui.operation_config.checkbox.replace"), id="replace")
                     yield Checkbox(t("tui.operation_config.checkbox.data_only"), id="data_only")
                     yield Checkbox(t("tui.operation_config.checkbox.resume"), id="resume")
                 yield Checkbox(t("tui.operation_config.checkbox.dry_run"), id="dry_run")
@@ -130,9 +132,11 @@ class OperationConfigScreen(Screen[OperationConfig | None]):
         dry_run = self.query_one("#dry_run", Checkbox).value
 
         data_only = False
+        replace = False
         resume = False
         max_docs = 0
         if self._operation == "copy":
+            replace = self.query_one("#replace", Checkbox).value
             data_only = self.query_one("#data_only", Checkbox).value
             resume = self.query_one("#resume", Checkbox).value
             try:
@@ -140,12 +144,13 @@ class OperationConfigScreen(Screen[OperationConfig | None]):
             except ValueError:
                 max_docs = 0
 
-        _log.info(f"Operation '{self._operation}' configured: pattern={pattern!r}, obfuscate={obfuscate}, dry_run={dry_run}")
+        _log.info(f"Operation '{self._operation}' configured: pattern={pattern!r}, obfuscate={obfuscate}, replace={replace}, dry_run={dry_run}")
         self.dismiss(OperationConfig(
             source_alias=self._source,
             target_alias=self._target,
             pattern=pattern,
             obfuscate=obfuscate,
+            replace=replace,
             data_only=data_only,
             dry_run=dry_run,
             resume=resume,

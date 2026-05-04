@@ -153,6 +153,23 @@ El engine proporciona `transform_collection_name(name: str) -> str` que aplica l
 
 El archivo se define en `Settings.replacements_path` (default: `./replacement_rules.txt`). Es análogo a `obfuscation_rules_path`.
 
+### Uso independiente con `--replace`
+
+Los reemplazos directos pueden activarse **sin ofuscación PII** usando el flag `--replace` en la operación `copy`:
+
+```bash
+db-tool copy --source <alias> --target <alias> --replace
+```
+
+En este modo el engine se construye con `replace_only=True`: no carga las reglas fijas ni dinámicas, solo `replacement_rules.txt`. Útil para renombrar tenants o dominios sin alterar campos de datos sensibles con Faker.
+
+| Flags activos | Comportamiento |
+|---|---|
+| ninguno | copia sin transformaciones |
+| `--replace` | solo reemplazos directos |
+| `--obfuscate` | PII rules + reemplazos directos |
+| `--replace --obfuscate` | equivalente a solo `--obfuscate` |
+
 ---
 
 ## Modificar el sistema de ofuscación
