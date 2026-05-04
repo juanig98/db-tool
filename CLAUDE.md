@@ -49,12 +49,15 @@ docs/               documentación técnica detallada
 ```
 
 ## Archivos de configuración (gitignoreados)
+
+Todos los archivos de configuración del operador viven en `config/`. Los `.example` están trackeados; los reales están en `.gitignore`.
+
 | Archivo | Propósito | Ejemplo |
 |---------|-----------|---------|
-| `connections.yaml` | Perfiles de conexión | `connections.yaml.example` |
-| `settings.env` | Parámetros operativos | `settings.env.example` |
-| `obfuscation_rules.txt` | Reglas dinámicas de ofuscación | `obfuscation_rules.txt.example` |
-| `replacement_rules.txt` | Reemplazos directos de strings | `replacement_rules.txt.example` |
+| `config/connections.yaml` | Perfiles de conexión | `config/connections.yaml.example` |
+| `config/settings.env` | Parámetros operativos | `config/settings.env.example` |
+| `config/obfuscation_rules.txt` | Reglas dinámicas de ofuscación | `config/obfuscation_rules.txt.example` |
+| `config/replacement_rules.txt` | Reemplazos directos de strings | `config/replacement_rules.txt.example` |
 
 ## Cómo modificar cada característica
 
@@ -83,22 +86,22 @@ docs/               documentación técnica detallada
 
 ### Agregar reglas de ofuscación dinámicas
 → Ver [`docs/obfuscation.md`](docs/obfuscation.md) — sección "Capa 2: Reglas dinámicas"
-- Editar `obfuscation_rules.txt` (una regla por línea)
+- Editar `config/obfuscation_rules.txt` (una regla por línea)
 - Formato: `field_regex::value_regex::faker_type`
 - Desde la TUI: Settings → editar ruta, luego editar el archivo
 
 ### Agregar reemplazos directos
 → Ver [`docs/obfuscation.md`](docs/obfuscation.md) — sección "Capa 3: Reemplazos directos"
-- Editar `replacement_rules.txt` (una regla por línea)
+- Editar `config/replacement_rules.txt` (una regla por línea)
 - Formato: `original::reemplazo`
 - Aplica a valores string y nombres de colecciones
 
 ### Cambiar parámetros operativos
-- Editar `settings.env` directamente, o usar `db-tool tui` → Settings
+- Editar `config/settings.env` directamente, o usar `db-tool tui` → Settings
 - Variables: `BATCH_SIZE`, `THROTTLE_RPS`, `MONGO_MAX_RETRIES`, `MONGO_RETRY_BACKOFF_BASE`, `STATE_DIR`, `MAPPINGS_DIR`, `OBFUSCATION_RULES_PATH`
 
 ### Agregar/modificar conexiones
-- Editar `connections.yaml` directamente, o usar `db-tool config add|edit|remove`
+- Editar `config/connections.yaml` directamente, o usar `db-tool config add|edit|remove`
 - Campos por perfil: `alias`, `environment` (production|stage|dev|local), `type`, `connection_string`, `blacklist` (lista de regex)
 
 ### Modificar reglas de protección

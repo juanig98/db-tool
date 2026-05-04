@@ -42,7 +42,7 @@ Source DB
 
 ### `config/`
 - **`models.py`**: `ConnectionProfile` y `Settings` como modelos Pydantic. `ConnectionProfile` tiene `is_production`, `is_stage`, `is_writable` como propiedades derivadas.
-- **`loader.py`**: `ConfigLoader` lee `connections.yaml` y `settings.env`. También expone `save_settings()` para que la TUI persista cambios.
+- **`loader.py`**: `ConfigLoader` lee `config/connections.yaml` y `config/settings.env`. También expone `save_settings()` para que la TUI persista cambios.
 - **`validator.py`**: Guards de protección. `guard_write()` lanza `ProductionWriteError`. `filter_blacklist()` aplica los regex de blacklist de un perfil.
 
 ### `connectors/`
@@ -59,7 +59,7 @@ Cada módulo expone una función `run_<op>(source, target, pattern, settings, ..
 
 ### `obfuscation/`
 - **`fixed_rules.py`**: 20 reglas precompiladas para email, nombre, teléfono, dirección, documentos de identidad.
-- **`dynamic_rules.py`**: Parser de `obfuscation_rules.txt`. Formato: `field_regex::value_regex::faker_type`.
+- **`dynamic_rules.py`**: Parser de `config/obfuscation_rules.txt`. Formato: `field_regex::value_regex::faker_type`.
 - **`mappings.py`**: `MappingStore` — garantiza consistencia referencial. Persiste en `~/.db-tool/mappings/<sha256>.json` por (valor_real, faker_type).
 - **`engine.py`**: `ObfuscationEngine` aplica ambas capas de forma recursiva. Carga dinámicos del archivo configurado. No muta el documento original.
 
@@ -75,7 +75,7 @@ Cada módulo expone una función `run_<op>(source, target, pattern, settings, ..
 - Screens: `main_menu` → `connection_select` → `operation_config` → `progress`. Settings, cleanup y connection management son accesibles desde el menú.
 - El `progress_callback` de las operaciones llama a `ProgressScreen.on_progress_event()`.
 - **Screens TUI adicionales**:
-  - `settings.py`: Edita settings.env (batch_size, throttle, paths, MongoDB config, language)
+  - `settings.py`: Edita config/settings.env (batch_size, throttle, paths, MongoDB config, language)
   - `cleanup.py`: Limpia state y mappings
   - `connection_management.py`: Lista, agrega, edita y elimina perfiles de conexión
   - `connection_form.py`: Formulario reutilizable para Add/Edit de conexiones
@@ -154,10 +154,10 @@ El módulo `db_tool/i18n/` provee internacionalización completa para todos los 
 
 ### Configuración
 
-La variable `LANGUAGE` se puede definir en `settings.env` o como variable de entorno del sistema. Valores soportados: `en`, `es`.
+La variable `LANGUAGE` se puede definir en `config/settings.env` o como variable de entorno del sistema. Valores soportados: `en`, `es`.
 
 ```bash
-# En settings.env
+# En config/settings.env
 LANGUAGE=es
 
 # O como variable de entorno (tiene precedencia)

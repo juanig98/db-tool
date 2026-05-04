@@ -68,19 +68,26 @@ success "Dependencias instaladas ✓"
 
 # ── archivos de configuración ─────────────────────────────────────────────────
 
-if [[ ! -f "$ROOT_DIR/connections.yaml" ]]; then
-    cp "$ROOT_DIR/connections.yaml.example" "$ROOT_DIR/connections.yaml"
-    warn "Se creó connections.yaml desde el ejemplo. Editarlo con tus conexiones antes de usar la herramienta."
+mkdir -p "$ROOT_DIR/config"
+
+if [[ ! -f "$ROOT_DIR/config/connections.yaml" ]]; then
+    cp "$ROOT_DIR/config/connections.yaml.example" "$ROOT_DIR/config/connections.yaml"
+    warn "Se creó config/connections.yaml desde el ejemplo. Editarlo con tus conexiones antes de usar la herramienta."
 fi
 
-if [[ ! -f "$ROOT_DIR/settings.env" ]]; then
-    cp "$ROOT_DIR/settings.env.example" "$ROOT_DIR/settings.env"
-    info "Se creó settings.env con valores por defecto."
+if [[ ! -f "$ROOT_DIR/config/settings.env" ]]; then
+    cp "$ROOT_DIR/config/settings.env.example" "$ROOT_DIR/config/settings.env"
+    info "Se creó config/settings.env con valores por defecto."
 fi
 
-if [[ ! -f "$ROOT_DIR/obfuscation_rules.txt" ]]; then
-    cp "$ROOT_DIR/obfuscation_rules.txt.example" "$ROOT_DIR/obfuscation_rules.txt"
-    info "Se creó obfuscation_rules.txt desde el ejemplo."
+if [[ ! -f "$ROOT_DIR/config/obfuscation_rules.txt" ]]; then
+    cp "$ROOT_DIR/config/obfuscation_rules.txt.example" "$ROOT_DIR/config/obfuscation_rules.txt"
+    info "Se creó config/obfuscation_rules.txt desde el ejemplo."
+fi
+
+if [[ ! -f "$ROOT_DIR/config/replacement_rules.txt" ]]; then
+    cp "$ROOT_DIR/config/replacement_rules.txt.example" "$ROOT_DIR/config/replacement_rules.txt"
+    info "Se creó config/replacement_rules.txt desde el ejemplo."
 fi
 
 # ── directorios de estado ─────────────────────────────────────────────────────
@@ -98,4 +105,4 @@ echo -e "  Activar entorno : ${CYAN}source .venv/bin/activate${NC}"
 echo -e "  Lanzar TUI      : ${CYAN}./run.sh${NC}"
 echo -e "  Ver ayuda       : ${CYAN}.venv/bin/db-tool --help${NC}"
 echo ""
-warn "Recordá editar connections.yaml con tus conexiones antes de usar la herramienta."
+warn "Recordá editar config/connections.yaml con tus conexiones antes de usar la herramienta."
