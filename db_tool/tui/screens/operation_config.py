@@ -79,7 +79,8 @@ class OperationConfigScreen(Screen[OperationConfig | None]):
             yield Rule()
             yield Label(t("tui.operation_config.group.options"), classes="section-header")
             with Horizontal():
-                yield Checkbox(t("tui.operation_config.checkbox.obfuscate"), id="obfuscate")
+                if self._operation in ("copy", "sync", "export"):
+                    yield Checkbox(t("tui.operation_config.checkbox.obfuscate"), id="obfuscate")
                 if self._operation == "copy":
                     yield Checkbox(t("tui.operation_config.checkbox.data_only"), id="data_only")
                     yield Checkbox(t("tui.operation_config.checkbox.resume"), id="resume")
@@ -126,7 +127,11 @@ class OperationConfigScreen(Screen[OperationConfig | None]):
             return
 
         pattern = self.query_one("#pattern", Input).value or ".*"
-        obfuscate = self.query_one("#obfuscate", Checkbox).value
+        obfuscate = (
+            self.query_one("#obfuscate", Checkbox).value
+            if self._operation in ("copy", "sync", "export")
+            else False
+        )
         dry_run = self.query_one("#dry_run", Checkbox).value
 
         data_only = False
