@@ -23,8 +23,8 @@ def _resolve_config_path(filename: str) -> Path:
     Priority:
     1. DB_TOOL_CONFIG env var (full path to connections.yaml; only applies when filename matches)
     2. DB_TOOL_CONFIG_DIR env var (directory containing config files)
-    3. Walk up from cwd until the file is found (git-style)
-    4. Fall back to cwd so callers get a clear missing-file error
+    3. Walk up from cwd: check <dir>/config/<filename> then <dir>/<filename> (legacy)
+    4. Fall back to <cwd>/config/<filename> so callers get a clear missing-file error
     """
     if filename == "connections.yaml":
         env_file = os.environ.get("DB_TOOL_CONFIG")
@@ -37,11 +37,14 @@ def _resolve_config_path(filename: str) -> Path:
 
     current = Path.cwd()
     for directory in [current, *current.parents]:
+        candidate = directory / "config" / filename
+        if candidate.exists():
+            return candidate
         candidate = directory / filename
         if candidate.exists():
             return candidate
 
-    return current / filename
+    return current / "config" / filename
 
 
 class ConfigLoader:

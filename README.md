@@ -27,12 +27,12 @@ bash scripts/install.sh
 - Instalar [uv](https://docs.astral.sh/uv/) si no está presente
 - Crear el entorno virtual `.venv`
 - Instalar todas las dependencias del proyecto
-- Crear `connections.yaml`, `settings.env` y `obfuscation_rules.txt` desde sus ejemplos si no existen
+- Crear `config/connections.yaml`, `config/settings.env`, `config/obfuscation_rules.txt` y `config/replacement_rules.txt` desde sus ejemplos si no existen
 - Crear los directorios `~/.db-tool/state/` y `~/.db-tool/mappings/`
 
 ## Configuración inicial
 
-Editar `connections.yaml` con tus bases de datos (se crea automáticamente al instalar):
+Editar `config/connections.yaml` con tus bases de datos (se crea automáticamente al instalar):
 
 ```yaml
 - alias: prod-conversational
@@ -49,9 +49,9 @@ Editar `connections.yaml` con tus bases de datos (se crea automáticamente al in
   blacklist: []
 ```
 
-> `connections.yaml` está en `.gitignore` — nunca se sube al repositorio.
+> `config/connections.yaml` está en `.gitignore` — nunca se sube al repositorio.
 
-Los parámetros operativos opcionales se configuran en `settings.env`:
+Los parámetros operativos opcionales se configuran en `config/settings.env`:
 
 ```env
 BATCH_SIZE=1000          # documentos por batch
@@ -60,7 +60,7 @@ MONGO_MAX_RETRIES=5      # reintentos ante error de RU exhaustion
 MONGO_RETRY_BACKOFF_BASE=2.0
 ```
 
-Las reglas de ofuscación adicionales van en `obfuscation_rules.txt`. Formato: `field_regex::value_regex::faker_type` — ver [docs/obfuscation.md](docs/obfuscation.md).
+Las reglas de ofuscación adicionales van en `config/obfuscation_rules.txt`. Formato: `field_regex::value_regex::faker_type` — ver [docs/obfuscation.md](docs/obfuscation.md).
 
 ## Uso
 

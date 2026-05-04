@@ -14,10 +14,11 @@ bash scripts/install.sh
 2. **Instala uv** — si `uv` no está en el PATH ni en `~/.local/bin/`, lo descarga e instala automáticamente desde `astral.sh`.
 3. **Crea el entorno virtual** en `.venv/` — solo si no existe.
 4. **Instala dependencias** — ejecuta `uv pip install -e ".[dev]"` contra `pyproject.toml`. Incluye dependencias de producción y de desarrollo (pytest, etc.).
-5. **Crea archivos de configuración** desde sus ejemplos, si no existen:
-   - `connections.yaml` ← `connections.yaml.example`
-   - `settings.env` ← `settings.env.example`
-   - `obfuscation_rules.txt` ← `obfuscation_rules.txt.example`
+5. **Crea el directorio `config/`** si no existe y copia los archivos de configuración desde sus ejemplos si no existen:
+   - `config/connections.yaml` ← `config/connections.yaml.example`
+   - `config/settings.env` ← `config/settings.env.example`
+   - `config/obfuscation_rules.txt` ← `config/obfuscation_rules.txt.example`
+   - `config/replacement_rules.txt` ← `config/replacement_rules.txt.example`
 6. **Crea directorios de estado** — `~/.db-tool/state/` y `~/.db-tool/mappings/`.
 7. **Escribe un marker** en `.venv/.installed` con la fecha de instalación. `run.sh` usa este marker para saber si la instalación fue completada.
 
@@ -25,7 +26,7 @@ bash scripts/install.sh
 
 Es seguro ejecutarlo varias veces:
 - No reinstala dependencias si ya están instaladas (uv es idempotente).
-- No sobreescribe `connections.yaml`, `settings.env` ni `obfuscation_rules.txt` si ya existen.
+- No sobreescribe `config/connections.yaml`, `config/settings.env`, `config/obfuscation_rules.txt` ni `config/replacement_rules.txt` si ya existen.
 - Sí actualiza el marker de instalación.
 
 Para forzar una reinstalación limpia:
