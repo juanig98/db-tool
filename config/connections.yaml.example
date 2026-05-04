@@ -13,6 +13,7 @@
   connection_string: "mongodb://localhost:27017"
   database_name: mydb
   blacklist: []
+  # allow_prod_writes: true  # set to true only if this non-production connection has a prod-like hostname that triggers the heuristic block (e.g. a prod clone named "prod-clone-local")
 
 - alias: local-mysql
   environment: local
