@@ -39,6 +39,29 @@ def test_connection_profile_empty_alias_raises():
         )
 
 
+def test_allow_prod_writes_defaults_to_false():
+    p = ConnectionProfile(
+        alias="dev",
+        environment=Environment.DEV,
+        type=ConnectorType.MONGODB,
+        connection_string="mongodb://host",
+        database_name="db",
+    )
+    assert p.allow_prod_writes is False
+
+
+def test_allow_prod_writes_can_be_set():
+    p = ConnectionProfile(
+        alias="dev",
+        environment=Environment.DEV,
+        type=ConnectorType.MONGODB,
+        connection_string="mongodb://host",
+        database_name="db",
+        allow_prod_writes=True,
+    )
+    assert p.allow_prod_writes is True
+
+
 def test_settings_defaults():
     s = Settings()
     assert s.batch_size == 1000

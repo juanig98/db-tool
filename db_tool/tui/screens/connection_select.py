@@ -6,6 +6,7 @@ from textual.screen import Screen
 from textual.widgets import Button, Footer, Header, Label, Rule, Select
 
 from db_tool.config.models import ConnectionProfile
+from db_tool.config.validator import check_connection_string_signals
 from db_tool.i18n import t
 
 _log = logging.getLogger("db_tool.tui.connection_select")
@@ -37,6 +38,7 @@ class ConnectionSelectScreen(Screen[tuple[str, str] | None]):
         self._profiles = profiles
         self._needs_source = needs_source
         self._needs_target = needs_target
+        self._profile_map: dict[str, ConnectionProfile] = {p.alias: p for p in profiles}
 
     def _title_key(self) -> str:
         if self._needs_source and self._needs_target:
@@ -85,6 +87,21 @@ class ConnectionSelectScreen(Screen[tuple[str, str] | None]):
                 self.notify(t("tui.connection_select.warning.select_target"), severity="warning")
                 return
             target_val = str(target_select.value)
+
+        if self._needs_target and target_val:
+            target_profile = self._profile_map[target_val]
+            if not target_profile.allow_prod_writes:
+                high = [
+                    w for w in check_connection_string_signals([target_profile])
+                    if w.severity == "high"
+                ]
+                if high:
+                    self.notify(
+                        t("tui.connection_select.error.prod_heuristic_block",
+                          alias=target_val, keyword=high[0].matched_keyword),
+                        severity="error",
+                    )
+                    return
 
         _log.info(f"Connections selected: source={source_val!r}, target={target_val!r}")
         self.dismiss((source_val, target_val))

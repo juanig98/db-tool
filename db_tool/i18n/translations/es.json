@@ -1,6 +1,5 @@
 {
   "cli.app.help": "Herramienta para copiar, sincronizar y ofuscar datos entre bases de datos.",
-
   "cli.copy.help": "Copia colecciones del origen al destino.",
   "cli.copy.option.source": "Alias de conexión de origen",
   "cli.copy.option.target": "Alias de conexión de destino",
@@ -11,16 +10,11 @@
   "cli.copy.option.dry_run": "Mostrar qué se haría sin ejecutar nada",
   "cli.copy.option.resume": "Retomar desde el último checkpoint",
   "cli.copy.option.max_docs": "Máx. documentos por colección (0 = todos)",
-
   "cli.sync.help": "Sincroniza colecciones: solo copia documentos nuevos o actualizados.",
-
   "cli.delete.help": "Elimina colecciones que coincidan con el patrón del destino.",
-
   "cli.obfuscate.help": "Aplica ofuscación in-place en el destino (solo entornos no productivos).",
-
   "cli.export.help": "Exporta colecciones a archivos JSONL.",
   "cli.export.option.output": "Directorio de salida",
-
   "cli.config.help": "Gestiona perfiles de conexión.",
   "cli.config.list.help": "Lista todos los perfiles de conexión.",
   "cli.config.add.help": "Agrega un nuevo perfil de conexión.",
@@ -30,29 +24,23 @@
   "cli.config.remove.help": "Elimina un perfil de conexión.",
   "cli.config.test.help": "Prueba la conectividad de un perfil de conexión.",
   "cli.config.test.testing": "Probando conexión a [{alias}]...",
-
   "cli.cleanup.help": "Limpia datos persistentes.",
   "cli.cleanup.mappings.help": "Elimina todos los archivos de mapeo de ofuscación.",
   "cli.cleanup.state.help": "Elimina todos los archivos de estado de sincronización/copia.",
-
   "cli.tui.help": "Lanza la interfaz TUI interactiva.",
   "cli.tui.option.debug": "Activar logging debug en stderr",
-
   "tui.logs.title": "Logs",
   "tui.logs.binding.back": "Volver",
   "tui.logs.button.clear": "Limpiar",
   "tui.logs.filter.placeholder": "Filtrar por módulo...",
-
   "cli.error.production_write": "ERROR: el destino '{target}' es PRODUCCIÓN. Las operaciones de escritura están bloqueadas.",
   "cli.error.production_obfuscate": "ERROR: el destino '{target}' es PRODUCCIÓN. La ofuscación in-place está bloqueada.",
   "cli.error.failed": "FALLÓ: {exc}",
-
   "cli.success.connection_added": "Conexión '{alias}' agregada.",
   "cli.success.connection_removed": "Conexión '{alias}' eliminada.",
   "cli.success.connection_test_ok": "OK — {count} colección(es) visible(s).",
   "cli.success.mappings_deleted": "Se eliminaron {count} archivo(s) de mapeo.",
   "cli.success.state_deleted": "Se eliminaron {count} archivo(s) de estado.",
-
   "cli.formatter.table.connections": "Conexiones",
   "cli.formatter.table.alias": "Alias",
   "cli.formatter.table.environment": "Entorno",
@@ -71,23 +59,19 @@
   "cli.formatter.confirm.production_copy": "⚠️  El origen '{source_alias}' es PRODUCCIÓN y la ofuscación está desactivada. Se podrían copiar datos sensibles. ¿Continuar?",
   "cli.formatter.progress.complete": "  [green]✓[/green] {collection}: {upserted} insertados, {modified} modificados, {skipped} omitidos",
   "cli.formatter.progress.error": "  [red]✗[/red] {collection}: {error}",
-
   "config.error.connections_not_found": "Archivo de conexiones no encontrado: {path}\nCopiá connections.yaml.example a connections.yaml y configurá tus conexiones.",
   "config.error.connections_not_list": "connections.yaml debe ser una lista YAML de perfiles de conexión",
   "config.error.invalid_profile": "Perfil de conexión inválido en el índice {index}: {exc}",
   "config.error.duplicate_aliases": "Se encontraron aliases duplicados en connections.yaml",
   "config.error.connection_not_found": "Conexión '{alias}' no encontrada. Disponibles: {available}",
   "config.error.connection_already_exists": "La conexión '{alias}' ya existe",
-
   "config.model.error.alias_empty": "el alias no puede estar vacío",
   "config.model.error.batch_size_min": "batch_size debe ser >= 1",
   "config.model.error.throttle_min": "throttle_rps debe ser >= 0",
   "config.model.error.language_invalid": "el idioma debe ser uno de: en, es",
-
   "validator.error.production_write": "La conexión '{alias}' es un entorno de PRODUCCIÓN. Las operaciones de escritura están bloqueadas. Usá un destino no productivo.",
   "validator.error.production_mutation": "La conexión '{alias}' es un entorno de PRODUCCIÓN. Modificar o eliminar configuraciones de conexiones productivas está bloqueado.",
   "validator.warning.connection_string_mismatch": "[{severity}] El perfil '{alias}' está declarado como '{declared}' pero la cadena de conexión sugiere el entorno '{detected}' (coincidencia: '{keyword}').",
-
   "connector.error.unsupported_type": "Tipo de conector no soportado: {type}",
   "connector.mongodb.error.cannot_connect": "No se puede conectar a MongoDB '{alias}': {exc}",
   "connector.mongodb.error.not_connected": "El conector '{alias}' no está conectado. Llamá a connect() primero.",
@@ -95,11 +79,9 @@
   "connector.bigquery.error.invalid_uri": "URI de BigQuery inválida: {uri!r}. Formato esperado: bigquery://project/dataset",
   "connector.bigquery.error.not_connected": "El conector '{alias}' no está conectado. Llamá a connect() primero.",
   "connector.mysql.error.not_connected": "El conector '{alias}' no está conectado. Llamá a connect() primero.",
-
   "tui.app.title": "db-tool",
   "tui.app.subtitle": "Herramienta de bases de datos",
   "tui.app.error.settings_failed": "Error al cargar la configuración: {exc}",
-
   "tui.main_menu.title": "db-tool",
   "tui.main_menu.subtitle": "Herramienta de gestión de bases de datos",
   "tui.main_menu.group.data": "Operaciones de datos",
@@ -117,7 +99,6 @@
   "tui.main_menu.status.checking_source": "Verificando conexión al origen '{alias}'...",
   "tui.main_menu.status.checking_target": "Verificando conexión al destino '{alias}'...",
   "tui.main_menu.status.connections_ok": "Conexiones OK. Iniciando operación...",
-
   "tui.connection_select.title": "Seleccioná conexiones de origen y destino",
   "tui.connection_select.label.source": "Origen:",
   "tui.connection_select.label.target": "Destino:",
@@ -131,7 +112,6 @@
   "tui.connection_select.warning.select_target": "Por favor seleccioná una conexión de destino.",
   "tui.connection_select.title.source_only": "Seleccioná conexión de origen",
   "tui.connection_select.title.target_only": "Seleccioná conexión de destino",
-
   "tui.operation_config.title": "Configurar: {operation}",
   "tui.operation_config.group.connections": "Conexiones",
   "tui.operation_config.group.scope": "Alcance",
@@ -157,7 +137,6 @@
   "tui.operation_config.config.source_db": "BD origen: {name} ({type})",
   "tui.operation_config.config.target_db": "BD destino: {name} ({type})",
   "tui.operation_config.config.no_settings": "Sin configuración cargada",
-
   "tui.progress.title": "Ejecutando: {operation}",
   "tui.progress.status.initializing": "Inicializando...",
   "tui.progress.status.connecting": "Conectando a '{alias}'...",
@@ -173,7 +152,6 @@
   "tui.progress.log.error": " [red]ERROR: {error}[/red]",
   "tui.progress.warning.in_progress": "Operación en curso. Por favor esperá...",
   "tui.progress.binding.back": "Volver",
-
   "tui.cleanup.title": "Limpieza",
   "tui.cleanup.group.mappings": "Mapeos de ofuscación",
   "tui.cleanup.group.state": "Estado de operaciones",
@@ -188,7 +166,6 @@
   "tui.cleanup.binding.back": "Volver",
   "tui.cleanup.success.mappings_deleted": "Se eliminaron {count} archivo(s) de mapeo.",
   "tui.cleanup.success.state_deleted": "Se eliminaron {count} archivo(s) de estado.",
-
   "tui.settings.title": "Configuración",
   "tui.settings.group.performance": "Rendimiento",
   "tui.settings.group.paths": "Rutas de archivos",
@@ -208,14 +185,11 @@
   "tui.settings.binding.cancel": "Cancelar",
   "tui.settings.success.saved": "Configuración guardada.",
   "tui.settings.error.save_failed": "Error al guardar la configuración: {exc}",
-
   "tui.connection_card.env.production": "[red]PRODUCCIÓN[/red]",
   "tui.connection_card.env.stage": "[yellow]STAGE[/yellow]",
   "tui.connection_card.env.dev": "[green]DEV[/green]",
   "tui.connection_card.env.local": "[blue]LOCAL[/blue]",
-
   "tui.main_menu.button.connections": "Conexiones",
-
   "tui.connections.title": "Gestión de Conexiones",
   "tui.connections.binding.cancel": "Volver",
   "tui.connections.no_profiles": "No hay conexiones configuradas. Agrega una con el botón de abajo.",
@@ -246,8 +220,8 @@
   "tui.connections.success.updated": "Conexión actualizada exitosamente.",
   "tui.connections.success.deleted": "Conexión eliminada exitosamente.",
   "tui.connections.warning.production_create": "Advertencia: No se recomienda crear una conexión de producción.",
-
   "obfuscation.error.invalid_rule": "Regla inválida en línea {line_num}: se esperaba 'field_regex::value_regex::faker_type', se obtuvo: {raw_line!r}",
   "obfuscation.error.invalid_field_regex": "Regex de campo inválido en línea {line_num}: {exc}",
-  "obfuscation.error.invalid_value_regex": "Regex de valor inválido en línea {line_num}: {exc}"
+  "obfuscation.error.invalid_value_regex": "Regex de valor inválido en línea {line_num}: {exc}",
+  "tui.connection_select.error.prod_heuristic_block": "No se puede usar '{alias}' como target: la cadena de conexión contiene '{keyword}', lo que sugiere un entorno productivo. Si es intencional, configurar allow_prod_writes: true en connections.yaml."
 }

@@ -26,6 +26,7 @@ class ConnectionProfile(BaseModel):
     connection_string: str
     database_name: str
     blacklist: list[str] = []
+    allow_prod_writes: bool = False
 
     @field_validator("alias")
     @classmethod

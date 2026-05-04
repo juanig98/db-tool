@@ -13,6 +13,7 @@
   connection_string: "mongodb://localhost:27017"
   database_name: mydb
   blacklist: []
+  # allow_prod_writes: true  # uncomment only if the connection string triggers the production heuristic and you know what you're doing
 
 - alias: local-mysql
   environment: local
