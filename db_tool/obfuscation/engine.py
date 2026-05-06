@@ -34,7 +34,9 @@ class ObfuscationEngine:
         self._replacement_rules: list[ReplacementRule] = []
         if settings.replacements_path.exists():
             self._replacement_rules = load_replacement_rules(settings.replacements_path)
-        self._exclusion_rules: list[ExclusionRule] = load_exclusion_rules(settings.exclusion_rules_path)
+        self._exclusion_rules: list[ExclusionRule] = (
+            load_exclusion_rules(settings.exclusion_rules_path) if not replace_only else []
+        )
 
     def reload_dynamic_rules(self, rules_path: Path) -> None:
         self._dynamic_rules = load_dynamic_rules(rules_path)
@@ -54,7 +56,7 @@ class ObfuscationEngine:
             if replaced != value:
                 return replaced
         # scalar: skip if field is excluded for this collection
-        if self._is_excluded(collection, field_name):
+        if self._exclusion_rules and isinstance(value, str) and self._is_excluded(collection, field_name):
             return value
         # scalar: check if a rule matches
         rule = self._find_rule(field_name, value)

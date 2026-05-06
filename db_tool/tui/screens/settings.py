@@ -44,6 +44,8 @@ class SettingsScreen(Screen[None]):
             yield Input(value=str(s.obfuscation_rules_path), id="obfuscation_rules_path")
             yield Label(t("tui.settings.label.replacements_path"), classes="label-muted")
             yield Input(value=str(s.replacements_path), id="replacements_path")
+            yield Label(t("tui.settings.label.exclusion_rules_path"), classes="label-muted")
+            yield Input(value=str(s.exclusion_rules_path), id="exclusion_rules_path")
 
             # ── MongoDB ───────────────────────────────────────────────
             yield Rule()
@@ -78,6 +80,7 @@ class SettingsScreen(Screen[None]):
                 mappings_dir=Path(self.query_one("#mappings_dir", Input).value).expanduser(),
                 obfuscation_rules_path=Path(self.query_one("#obfuscation_rules_path", Input).value),
                 replacements_path=Path(self.query_one("#replacements_path", Input).value),
+                exclusion_rules_path=Path(self.query_one("#exclusion_rules_path", Input).value),
                 mongo_max_retries=int(self.query_one("#mongo_max_retries", Input).value),
                 mongo_retry_backoff_base=float(self.query_one("#mongo_retry_backoff_base", Input).value),
                 language=self.query_one("#language", Input).value,

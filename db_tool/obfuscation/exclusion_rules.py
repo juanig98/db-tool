@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import logging
 import re
 from dataclasses import dataclass
 from pathlib import Path
+
+_log = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -29,10 +32,18 @@ def load_exclusion_rules(path: Path) -> list[ExclusionRule]:
             continue
         if "::" in line:
             collection_pat, field_pat = line.split("::", 1)
-            compiled_col: re.Pattern[str] | None = re.compile(collection_pat.strip(), re.IGNORECASE)
+            try:
+                compiled_col: re.Pattern[str] | None = re.compile(collection_pat.strip(), re.IGNORECASE)
+            except re.error as exc:
+                _log.warning("exclusion_rules: skipping malformed collection regex %r in line %r: %s", collection_pat.strip(), raw_line, exc)
+                continue
         else:
             compiled_col = None
             field_pat = line
-        compiled_field = re.compile(field_pat.strip(), re.IGNORECASE)
+        try:
+            compiled_field = re.compile(field_pat.strip(), re.IGNORECASE)
+        except re.error as exc:
+            _log.warning("exclusion_rules: skipping malformed field regex %r in line %r: %s", field_pat.strip(), raw_line, exc)
+            continue
         rules.append(ExclusionRule(collection_pattern=compiled_col, field_pattern=compiled_field))
     return rules

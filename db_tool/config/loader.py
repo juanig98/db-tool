@@ -91,7 +91,7 @@ class ConfigLoader:
             env_values = dotenv_values(self._settings_path)
         # also read from process environment (overrides file)
         for key in ("BATCH_SIZE", "THROTTLE_RPS", "STATE_DIR", "MAPPINGS_DIR",
-                    "OBFUSCATION_RULES_PATH", "REPLACEMENTS_PATH",
+                    "OBFUSCATION_RULES_PATH", "REPLACEMENTS_PATH", "EXCLUSION_RULES_PATH",
                     "MONGO_MAX_RETRIES", "MONGO_RETRY_BACKOFF_BASE", "LANGUAGE"):
             val = os.environ.get(key)
             if val is not None:
@@ -109,6 +109,8 @@ class ConfigLoader:
             raw["obfuscation_rules_path"] = Path(env_values["OBFUSCATION_RULES_PATH"])  # type: ignore[arg-type]
         if env_values.get("REPLACEMENTS_PATH"):
             raw["replacements_path"] = Path(env_values["REPLACEMENTS_PATH"])  # type: ignore[arg-type]
+        if env_values.get("EXCLUSION_RULES_PATH"):
+            raw["exclusion_rules_path"] = Path(env_values["EXCLUSION_RULES_PATH"])  # type: ignore[arg-type]
         if env_values.get("MONGO_MAX_RETRIES"):
             raw["mongo_max_retries"] = int(env_values["MONGO_MAX_RETRIES"])  # type: ignore[arg-type]
         if env_values.get("MONGO_RETRY_BACKOFF_BASE"):
@@ -127,6 +129,7 @@ class ConfigLoader:
             f"MAPPINGS_DIR={settings.mappings_dir}",
             f"OBFUSCATION_RULES_PATH={settings.obfuscation_rules_path}",
             f"REPLACEMENTS_PATH={settings.replacements_path}",
+            f"EXCLUSION_RULES_PATH={settings.exclusion_rules_path}",
             f"MONGO_MAX_RETRIES={settings.mongo_max_retries}",
             f"MONGO_RETRY_BACKOFF_BASE={settings.mongo_retry_backoff_base}",
             f"LANGUAGE={settings.language}",
