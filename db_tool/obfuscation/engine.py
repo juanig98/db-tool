@@ -7,6 +7,7 @@ from faker import Faker
 
 from db_tool.config.models import Settings
 from db_tool.obfuscation.dynamic_rules import load_dynamic_rules
+from db_tool.obfuscation.exclusion_rules import ExclusionRule, load_exclusion_rules
 from db_tool.obfuscation.fixed_rules import FIXED_RULES, FieldRule
 from db_tool.obfuscation.mappings import MappingStore
 from db_tool.obfuscation.replacement_rules import ReplacementRule, load_replacement_rules
@@ -33,29 +34,43 @@ class ObfuscationEngine:
         self._replacement_rules: list[ReplacementRule] = []
         if settings.replacements_path.exists():
             self._replacement_rules = load_replacement_rules(settings.replacements_path)
+        self._exclusion_rules: list[ExclusionRule] = load_exclusion_rules(settings.exclusion_rules_path)
 
     def reload_dynamic_rules(self, rules_path: Path) -> None:
         self._dynamic_rules = load_dynamic_rules(rules_path)
 
-    def transform(self, doc: dict[str, Any]) -> dict[str, Any]:
+    def transform(self, doc: dict[str, Any], collection: str | None = None) -> dict[str, Any]:
         """Return a new dict with PII fields obfuscated. Does not mutate input."""
-        return self._transform_value("__root__", doc)  # type: ignore[return-value]
+        return self._transform_value("__root__", doc, collection)  # type: ignore[return-value]
 
-    def _transform_value(self, field_name: str, value: Any) -> Any:
+    def _transform_value(self, field_name: str, value: Any, collection: str | None = None) -> Any:
         if isinstance(value, dict):
-            return {k: self._transform_value(k, v) for k, v in value.items()}
+            return {k: self._transform_value(k, v, collection) for k, v in value.items()}
         if isinstance(value, list):
-            return [self._transform_value(field_name, item) for item in value]
+            return [self._transform_value(field_name, item, collection) for item in value]
         # scalar: apply direct replacements first (priority over PII rules)
         if isinstance(value, str) and value and self._replacement_rules:
             replaced = self._apply_replacements(value)
             if replaced != value:
                 return replaced
+        # scalar: skip if field is excluded for this collection
+        if self._is_excluded(collection, field_name):
+            return value
         # scalar: check if a rule matches
         rule = self._find_rule(field_name, value)
         if rule is not None and value is not None and value != "":
             return self._apply_rule(rule, str(value))
         return value
+
+    def _is_excluded(self, collection: str | None, field_name: str) -> bool:
+        for rule in self._exclusion_rules:
+            if not rule.field_pattern.fullmatch(field_name):
+                continue
+            if rule.collection_pattern is None:
+                return True
+            if collection is not None and rule.collection_pattern.fullmatch(collection):
+                return True
+        return False
 
     def _find_rule(self, field_name: str, value: Any) -> FieldRule | None:
         # Fixed rules checked first, then dynamic

@@ -69,7 +69,7 @@ def test_sync_with_obfuscation(source_connector, target_connector, settings):
     source_connector.seed("users", [{"_id": 1, "email": "real@x.com"}])
 
     class MockEngine:
-        def transform(self, doc):
+        def transform(self, doc, collection=None):
             return {**doc, "email": "fake@fake.com"}
 
     run_sync(source_connector, target_connector, "users", settings, obfuscation_engine=MockEngine())

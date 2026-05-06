@@ -95,7 +95,7 @@ def _sync_collection(
             if to_upsert:
                 if obfuscation_engine is not None:
                     to_upsert_original = [d.copy() for d in to_upsert]
-                    to_upsert = [obfuscation_engine.transform(d) for d in to_upsert]
+                    to_upsert = [obfuscation_engine.transform(d, collection=collection) for d in to_upsert]
                     obfuscated_count = sum(1 for orig, new in zip(to_upsert_original, to_upsert) if orig != new)
                     obfuscated_total += obfuscated_count
                     _log.info(f"[{collection}] [batch {batch_index}] {len(to_upsert)} processed, {obfuscated_count} obfuscated")

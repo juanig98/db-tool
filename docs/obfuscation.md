@@ -6,6 +6,41 @@ db-tool reemplaza datos sensibles con datos falsos pero plausibles usando la lib
 
 ## Capas de ofuscación
 
+### Capa 0: Reglas de exclusión
+
+Definidas en `config/exclusion_rules.txt`. Permiten marcar campos que **no deben ofuscarse**, independientemente de las reglas fijas o dinámicas. Se evalúan antes que cualquier otra capa.
+
+**Formato del archivo** (una regla por línea):
+
+```
+# Exclusión scoped — solo en colecciones que matcheen collection_regex
+collection_regex::field_regex
+
+# Exclusión global — aplica en cualquier colección
+field_regex
+```
+
+- `collection_regex`: fullmatch case-insensitive sobre el nombre de la colección. Si se omite (sin `::`), la exclusión es global.
+- `field_regex`: fullmatch case-insensitive sobre el nombre del campo.
+- Líneas vacías y `#` son ignorados.
+
+Ejemplos:
+
+```
+# No ofuscar 'name' en colecciones de ambientes y canales
+.*-environments.*::name
+.*-channels.*::name
+
+# No ofuscar 'slug' en ninguna colección
+slug
+```
+
+**Precedencia**: si un campo está excluido, se devuelve el valor sin cambios. La única excepción son los reemplazos directos (Capa 3), que **sí aplican** antes de chequear la exclusión — esto permite transformar prefijos de tenant en campos excluidos de ofuscación PII.
+
+**Configuración**: el archivo se define en `Settings.exclusion_rules_path` (default: `./config/exclusion_rules.txt`). Ver plantilla en `config/exclusion_rules.txt.example`.
+
+---
+
 ### Capa 1: Reglas fijas
 
 Definidas en `db_tool/obfuscation/fixed_rules.py`. Se aplican siempre, sin configuración adicional.
@@ -173,6 +208,17 @@ En este modo el engine se construye con `replace_only=True`: no carga las reglas
 ---
 
 ## Modificar el sistema de ofuscación
+
+### Excluir un campo de la ofuscación
+Editar `config/exclusion_rules.txt` (o crear uno a partir del `.example`):
+```
+# Scoped (solo en colecciones que matcheen el regex)
+.*-environments.*::name
+
+# Global
+slug
+```
+El campo excluido se pasa sin cambios. Los reemplazos directos aún aplican antes de chequear la exclusión.
 
 ### Agregar una regla fija permanente
 Editar `db_tool/obfuscation/fixed_rules.py`, agregar una tupla a `_FIXED_RULES`:

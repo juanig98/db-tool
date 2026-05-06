@@ -36,7 +36,7 @@ def test_export_with_obfuscation(source_connector, settings, tmp_path):
     source_connector.seed("users", [{"_id": 1, "email": "real@x.com"}])
 
     class MockEngine:
-        def transform(self, doc):
+        def transform(self, doc, collection=None):
             return {**doc, "email": "fake@fake.com"}
 
     run_export(source_connector, "users", tmp_path, settings, obfuscation_engine=MockEngine())

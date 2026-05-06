@@ -79,7 +79,7 @@ def _export_collection(
                 obfuscated_count = 0
                 if obfuscation_engine is not None:
                     batch_original = batch.copy()
-                    batch = [obfuscation_engine.transform(doc) for doc in batch]
+                    batch = [obfuscation_engine.transform(doc, collection=collection) for doc in batch]
                     obfuscated_count = sum(1 for orig, new in zip(batch_original, batch) if orig != new)
                     obfuscated_total += obfuscated_count
                     _log.info(f"[{collection}] [batch {batch_index}] {len(batch)} processed, {obfuscated_count} obfuscated")

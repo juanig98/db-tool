@@ -84,7 +84,7 @@ def _obfuscate_collection(
     try:
         for batch in target.iter_documents(collection, settings.batch_size):
             batch_original = batch.copy()
-            obfuscated = [obfuscation_engine.transform(doc) for doc in batch]
+            obfuscated = [obfuscation_engine.transform(doc, collection=collection) for doc in batch]
             obfuscated_count = sum(1 for orig, new in zip(batch_original, obfuscated) if orig != new)
             obfuscated_total += obfuscated_count
             _log.info(f"[{collection}] [batch {batch_index}] {len(batch)} processed, {obfuscated_count} obfuscated")

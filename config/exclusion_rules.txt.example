@@ -1,0 +1,14 @@
+# Exclusion rules — fields that should NOT be obfuscated
+#
+# Format:
+#   collection_regex::field_regex   skip field in matching collections only
+#   field_regex                     skip field globally (all collections)
+#
+# Lines starting with # and empty lines are ignored.
+# Regex is case-insensitive and must be a fullmatch on the field name.
+#
+# Examples:
+#   .*-environments.*::name         preserve 'name' in *-environments* collections
+#   .*-channels.*::name             preserve 'name' in *-channels* collections
+#   slug                            preserve 'slug' everywhere
+#   .*::_type                       preserve '_type' in every collection

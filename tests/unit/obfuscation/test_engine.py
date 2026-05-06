@@ -196,3 +196,71 @@ def test_replacement_empty_string_not_touched(tmp_path):
     doc = {"text": ""}
     result = engine.transform(doc)
     assert result["text"] == ""
+
+
+def test_exclusion_global_rule_skips_obfuscation(tmp_path):
+    excl_path = tmp_path / "exclusion_rules.txt"
+    excl_path.write_text("name\n")
+    settings = Settings(
+        state_dir=tmp_path / "state",
+        mappings_dir=tmp_path / "mappings",
+        obfuscation_rules_path=tmp_path / "rules.txt",
+        exclusion_rules_path=excl_path,
+    )
+    engine = ObfuscationEngine(settings, seed=42)
+    doc = {"name": "John Doe", "email": "john@example.com"}
+    result = engine.transform(doc)
+    assert result["name"] == "John Doe"
+    assert result["email"] != "john@example.com"
+
+
+def test_exclusion_scoped_rule_skips_only_matching_collection(tmp_path):
+    excl_path = tmp_path / "exclusion_rules.txt"
+    excl_path.write_text(".*-environments.*::name\n")
+    settings = Settings(
+        state_dir=tmp_path / "state",
+        mappings_dir=tmp_path / "mappings",
+        obfuscation_rules_path=tmp_path / "rules.txt",
+        exclusion_rules_path=excl_path,
+    )
+    engine = ObfuscationEngine(settings, seed=42)
+    doc = {"name": "prod-env"}
+
+    result_env = engine.transform(doc, collection="tenant-environments-v2")
+    assert result_env["name"] == "prod-env"
+
+    result_users = engine.transform(doc, collection="tenant-users")
+    assert result_users["name"] != "prod-env"
+
+
+def test_exclusion_scoped_rule_no_collection_context_not_excluded(tmp_path):
+    excl_path = tmp_path / "exclusion_rules.txt"
+    excl_path.write_text(".*-environments.*::name\n")
+    settings = Settings(
+        state_dir=tmp_path / "state",
+        mappings_dir=tmp_path / "mappings",
+        obfuscation_rules_path=tmp_path / "rules.txt",
+        exclusion_rules_path=excl_path,
+    )
+    engine = ObfuscationEngine(settings, seed=42)
+    doc = {"name": "some-value"}
+    result = engine.transform(doc)
+    assert result["name"] != "some-value"
+
+
+def test_exclusion_replacement_takes_precedence_over_exclusion(tmp_path):
+    excl_path = tmp_path / "exclusion_rules.txt"
+    excl_path.write_text("name\n")
+    repl_path = tmp_path / "replacement_rules.txt"
+    repl_path.write_text("prod::staging\n")
+    settings = Settings(
+        state_dir=tmp_path / "state",
+        mappings_dir=tmp_path / "mappings",
+        obfuscation_rules_path=tmp_path / "rules.txt",
+        replacements_path=repl_path,
+        exclusion_rules_path=excl_path,
+    )
+    engine = ObfuscationEngine(settings, seed=42)
+    doc = {"name": "prod-environment"}
+    result = engine.transform(doc)
+    assert result["name"] == "staging-environment"

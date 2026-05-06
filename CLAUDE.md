@@ -58,6 +58,7 @@ Todos los archivos de configuración del operador viven en `config/`. Los `.exam
 | `config/settings.env` | Parámetros operativos | `config/settings.env.example` |
 | `config/obfuscation_rules.txt` | Reglas dinámicas de ofuscación | `config/obfuscation_rules.txt.example` |
 | `config/replacement_rules.txt` | Reemplazos directos de strings | `config/replacement_rules.txt.example` |
+| `config/exclusion_rules.txt` | Campos excluidos de ofuscación | `config/exclusion_rules.txt.example` |
 
 ## Cómo modificar cada característica
 
@@ -77,6 +78,12 @@ Todos los archivos de configuración del operador viven en `config/`. Los `.exam
 4. Agregar botón en `tui/screens/main_menu.py` y flujo en `_run_operation()`
 5. Agregar tests en `tests/unit/operations/test_<nombre>.py`
 6. Actualizar `docs/operations.md` con la nueva operación y sus flags
+
+### Excluir campos de la ofuscación
+→ Ver [`docs/obfuscation.md`](docs/obfuscation.md) — sección "Capa 0: Reglas de exclusión"
+- Editar `config/exclusion_rules.txt` (crear desde `.example`)
+- Formato: `collection_regex::field_regex` (scoped) o `field_regex` (global)
+- Los campos excluidos no son ofuscados, pero sí reciben reemplazos directos
 
 ### Modificar reglas de ofuscación fijas
 → Ver [`docs/obfuscation.md`](docs/obfuscation.md) — sección "Capa 1: Reglas fijas"

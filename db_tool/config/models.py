@@ -56,6 +56,7 @@ class Settings(BaseModel):
     mappings_dir: Path = Path("~/.db-tool/mappings").expanduser()
     obfuscation_rules_path: Path = Path("./config/obfuscation_rules.txt")
     replacements_path: Path = Path("./config/replacement_rules.txt")
+    exclusion_rules_path: Path = Path("./config/exclusion_rules.txt")
     mongo_max_retries: int = 5
     mongo_retry_backoff_base: float = 2.0
 

@@ -2,6 +2,7 @@ config/connections.yaml
 config/settings.env
 config/obfuscation_rules.txt
 config/replacement_rules.txt
+config/exclusion_rules.txt
 .env
 .env.*
 __pycache__/

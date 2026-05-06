@@ -64,7 +64,7 @@ def test_copy_with_obfuscation(source_connector, target_connector, settings):
     source_connector.seed("users", [{"_id": 1, "email": "real@example.com"}])
 
     class MockEngine:
-        def transform(self, doc):
+        def transform(self, doc, collection=None):
             return {**doc, "email": "fake@fake.com"}
 
         def transform_collection_name(self, name):
